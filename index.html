@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Berkah Motor – Pencatatan Sparepart (Prototype v2)</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f0e8;--card:#fffdf8;--ink:#1f1d1a;--mute:#6b665c;--line:#d9d3c5;--acc:#c2410c;--acc-ink:#fff;--ok:#2b7a4b;--warn:#9a6700;--bad:#b42318;--okbg:#e3f2e8;--warnbg:#fbf0d2;--badbg:#fbe4e1;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171612;--card:#211f1a;--ink:#f1ede3;--mute:#a49e90;--line:#3a372f;--acc:#f0722e;--acc-ink:#1a1008;--ok:#6fcf97;--warn:#f2c14e;--bad:#ff8a7a;--okbg:#1c3326;--warnbg:#3a2f12;--badbg:#42201b}}
+:root[data-theme="dark"]{--bg:#171612;--card:#211f1a;--ink:#f1ede3;--mute:#a49e90;--line:#3a372f;--acc:#f0722e;--acc-ink:#1a1008;--ok:#6fcf97;--warn:#f2c14e;--bad:#ff8a7a;--okbg:#1c3326;--warnbg:#3a2f12;--badbg:#42201b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 Barlow,system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;letter-spacing:.01em;margin:0}
+h2{font-size:26px}h3{font-size:19px;margin:18px 0 8px}
+header{background:var(--ink);color:var(--bg);padding:10px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;position:sticky;top:0;z-index:5}
+.brand{font:700 24px "Barlow Condensed","Arial Narrow",sans-serif;display:flex;align-items:center;gap:8px;margin-right:12px}
+.brand i{width:14px;height:24px;background:var(--acc);display:inline-block;transform:skewX(-14deg)}
+nav{display:flex;gap:4px;flex:1;flex-wrap:wrap}
+nav a{color:inherit;text-decoration:none;padding:10px 14px;min-height:44px;display:flex;align-items:center;border-bottom:3px solid transparent;font-weight:600}
+nav a[aria-current=page]{border-color:var(--acc)}
+.who{display:flex;align-items:center;gap:10px;font-size:14px}
+main{max-width:1060px;margin:0 auto;padding:22px 20px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px}
+.grid{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+.sum{position:sticky;top:76px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.add{display:grid;grid-template-columns:2fr .8fr 1fr auto;gap:12px;align-items:end}
+label{display:block;font-weight:600;font-size:14px;margin-top:12px}
+input,select,output{display:block;width:100%;min-height:44px;margin-top:4px;padding:8px 10px;border:1.5px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+output{display:flex;align-items:center;color:var(--mute);background:transparent;border-style:dashed}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.invalid{border-color:var(--bad)}
+.err{display:block;color:var(--bad);font-size:14px;font-weight:500;min-height:0;margin-top:4px}
+.err:not(:empty)::before{content:"⚠ "}
+.hint{font-size:14px;margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-height:22px}
+.meta{color:var(--mute);margin:12px 0 0;font-size:15px}
+.btn{min-height:44px;padding:8px 18px;border-radius:6px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:600 15px Barlow,system-ui,sans-serif;cursor:pointer}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.btn.big{width:100%;font-size:17px}
+.btn.ghost{border-color:var(--line);color:var(--mute);min-height:44px;min-width:44px;padding:4px 10px;font-weight:500}
+.btn:hover{filter:brightness(.94)}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:15px}
+th{text-align:left;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);padding:8px;border-bottom:2px solid var(--line)}
+td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+td input{width:90px;margin:0}
+.wrap{overflow-x:auto}
+.chip{display:inline-flex;gap:5px;align-items:center;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600}
+.chip.ok{background:var(--okbg);color:var(--ok)}.chip.warn{background:var(--warnbg);color:var(--warn)}.chip.bad{background:var(--badbg);color:var(--bad)}
+.empty{color:var(--mute);padding:18px;text-align:center;border:1.5px dashed var(--line);border-radius:8px;margin-top:10px}
+.big-n{font:700 44px/1 "Barlow Condensed",sans-serif}
+.sum dl{margin:12px 0;font-size:15px}.sum dt{color:var(--mute);margin-top:8px}.sum dd{margin:0;font-weight:600}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.role{text-align:left;padding:18px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);cursor:pointer;font:inherit;min-height:120px}
+.role:hover{border-color:var(--acc)}.role b{font:700 24px "Barlow Condensed",sans-serif;display:block}.role span{color:var(--mute);font-size:14px}
+.tabs{display:flex;gap:6px;margin:14px 0}.tabs button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.stats{display:flex;gap:28px;margin-top:20px;flex-wrap:wrap}.stats div span{display:block;color:var(--mute);font-size:14px}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:8px;max-width:92vw;display:none;z-index:20;font-weight:500}
+dialog{border:1.5px solid var(--ink);border-radius:10px;background:var(--card);color:var(--ink);max-width:440px;width:92vw;padding:22px}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+footer{text-align:center;color:var(--mute);font-size:13px;padding:0 20px 30px}
+@media (max-width:820px){.grid{grid-template-columns:1fr}.sum{position:static}.add{grid-template-columns:1fr 1fr}.add .btn{grid-column:1/-1}.roles{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><i></i>Berkah Motor</div>
+  <nav id="nav" aria-label="Menu utama"></nav>
+  <div class="who" id="who"></div>
+</header>
+<main id="app"></main>
+<footer></footer>
+<dialog id="dlg"></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<datalist id="dl-sp"></datalist>
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const SEED=()=>({sp:[{id:1,n:'Oli Mesin 1L',u:'pcs',s:33},{id:2,n:'Kampas Rem Depan',u:'set',s:4},{id:3,n:'Busi',u:'pcs',s:30},{id:4,n:'Rantai Motor',u:'set',s:0}],
+ log:[{t:'10-03-2026 09:00',j:'Masuk',ref:'NB-003',sp:'Oli Mesin 1L',q:24,a:9,b:33,by:'Sari',al:'–'},{t:'13-03-2026 10:15',j:'Pakai',ref:'SV-003',sp:'Busi',q:1,a:31,b:30,by:'Dedi',al:'–'}],
+ nota:['NB-001','NB-002','NB-003'],nn:4,sv:4});
+let D=SEED(),role=null,nota=[],pkx=[];
+const U={kasir:{n:'Ahmad',r:'Kasir'},montir:{n:'Bagas',r:'Montir'},pemilik:{n:'Sutikno',r:'Pemilik'}};
+const PEM=['Sumber Jaya Motor','Tiga Roda Spare','Mega Sparepart'];
+const ACCESS={kasir:['masuk','stok'],montir:['pakai','stok'],pemilik:['stok']};
+const LBL={beranda:'Beranda',masuk:'Sparepart Masuk',pakai:'Pemakaian Servis',stok:'Stok & Riwayat'};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sp=n=>D.sp.find(x=>x.n.toLowerCase()===String(n).trim().toLowerCase());
+const spid=id=>D.sp.find(x=>x.id===id);
+const st=s=>s<=0?['Habis','✕','bad']:s<=5?['Menipis','!','warn']:['Aman','✓','ok'];
+const chip=s=>{const [t,i,c]=st(s);return `<span class="chip ${c}"><span aria-hidden="true">${i}</span>${t}</span>`};
+const pad=n=>String(n).padStart(2,'0');
+const now=()=>{const d=new Date();return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`};
+const nid=(p,n)=>p+'-'+String(n).padStart(3,'0');
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',4200)}
+function ask(title,msg,ok,cb){const d=$('#dlg');d.innerHTML=`<h3 style="margin-top:0">${title}</h3><p>${msg}</p><div class="acts"><button class="btn" value="x" id="dn">Kembali</button><button class="btn pri" id="dy">${ok}</button></div>`;d.showModal();$('#dn').onclick=()=>d.close();$('#dy').onclick=()=>{d.close();cb()}}
+function setErr(id,m){const e=$('#e-'+id);if(e)e.textContent=m||'';const f=$('#'+id);if(f)f.classList.toggle('invalid',!!m)}
+
+function chrome(){
+  const acc=role?['beranda',...ACCESS[role]]:['beranda'];
+  const cur=(location.hash||'#beranda').slice(1);
+  $('#nav').innerHTML=acc.map(r=>`<a href="#${r}" ${r===cur?'aria-current="page"':''}>${LBL[r]}</a>`).join('');
+  $('#who').innerHTML=role?`<span>${U[role].n} · <b>${U[role].r}</b></span><button class="btn ghost" id="out" style="color:var(--bg);border-color:#777">Ganti peran</button>`:'<span>Belum masuk</span>';
+  const o=$('#out');if(o)o.onclick=()=>{role=null;nota=[];pkx=[];location.hash='#beranda';route()};
+
+  const footer=$('footer');
+  if(cur==='beranda'){
+    footer.innerHTML='Bengkel Motor berkah 2026';
+  }else{
+    footer.innerHTML='<button class="btn" id="reset">Reset</button>';
+    $('#reset').onclick=()=>{
+      D=SEED();
+      nota=[];
+      pkx=[];
+      route();
+      toast('Data berhasil direset!');
+    };
+  }
+}
+
+function route(){
+  let r=(location.hash||'#beranda').slice(1);
+  if(!LBL[r])r='beranda';
+  if(r!=='beranda'&&(!role||!ACCESS[role].includes(r))){r='beranda';history.replaceState(null,'','#beranda')}
+  chrome();({beranda,masuk,pakai,stok})[r]();window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+
+function beranda(){
+  const low=D.sp.filter(x=>x.s<=5).length;
+  $('#app').innerHTML=`<div class="card"><h2>Pencatatan Sparepart Bengkel</h2>
+  <p class="meta">Pilih peran untuk masuk (simulasi login pada prototype).</p>
+  <div class="roles">
+   <button class="role" data-r="kasir"><b>Kasir</b><span>Mencatat sparepart masuk dari nota pembelian</span></button>
+   <button class="role" data-r="montir"><b>Montir</b><span>Mencatat sparepart yang dipakai untuk servis</span></button>
+   <button class="role" data-r="pemilik"><b>Pemilik</b><span>Memantau stok, riwayat, dan mengoreksi stok</span></button></div>
+  <div class="stats"><div><span>Jenis sparepart</span><div class="big-n">${D.sp.length}</div></div><div><span>Perlu perhatian (menipis/habis)</span><div class="big-n">${low}</div></div><div><span>Aktivitas tercatat</span><div class="big-n">${D.log.length}</div></div></div></div>`;
+  document.querySelectorAll('.role').forEach(b=>b.onclick=()=>{role=b.dataset.r;location.hash='#'+ACCESS[role][0];route()});
+}
+
+function tbl(list,kind){
+  if(!list.length)return `<div class="empty">Belum ada item. Pilih sparepart lalu tekan “+ Tambah”.</div>`;
+  return `<div class="wrap"><table><thead><tr><th>Sparepart</th><th>Satuan</th><th>Jumlah</th><th><span class="sr" style="position:absolute;left:-9999px">Aksi</span></th></tr></thead><tbody>`+
+   list.map((x,i)=>{const s=spid(x.id);return `<tr><td>${esc(s.n)}</td><td>${s.u}</td><td><input type="number" min="1" step="1" value="${x.j}" data-i="${i}" aria-label="Jumlah ${esc(s.n)}"></td><td><button class="btn ghost" data-del="${i}" aria-label="Hapus ${esc(s.n)} dari daftar" title="Hapus">🗑</button></td></tr>`}).join('')+`</tbody></table></div>`;
+}
+function bindTbl(list,kind,refresh){
+  document.querySelectorAll('#items [data-del]').forEach(b=>b.onclick=()=>{const x=list[b.dataset.del];ask('Hapus item?',`${esc(spid(x.id).n)} akan dihapus dari daftar ini. Data belum disimpan, jadi stok tidak berubah.`,'Ya, hapus',()=>{list.splice(b.dataset.del,1);refresh()})});
+  document.querySelectorAll('#items input').forEach(inp=>inp.onchange=()=>{const x=list[inp.dataset.i],s=spid(x.id),v=Number(inp.value);
+    if(!Number.isInteger(v)||v<1){setErr('item','Jumlah minimal 1 dan berupa bilangan bulat.');inp.value=x.j;return}
+    if(kind==='pakai'&&v>s.s){setErr('item',`Jumlah ${esc(s.n)} melebihi stok (tersedia ${s.s} ${s.u}). Jumlah dikembalikan.`);inp.value=x.j;return}
+    setErr('item','');x.j=v;refresh()});
+}
+
+function masuk(){
+  $('#app').innerHTML=`<div class="grid"><div class="card"><h2>Catat Sparepart Masuk</h2>
+  <div class="row2"><label>Nomor nota<input id="nn" value="${nid('NB',D.nn)}" autocomplete="off"><span class="err" id="e-nn"></span></label>
+  <label>Tanggal nota<input id="nt" type="date"></label></div>
+  <label>Pemasok<select id="np"><option value="">— Pilih pemasok —</option>${PEM.map(p=>`<option>${p}</option>`).join('')}</select><span class="err" id="e-np"></span></label>
+  <p class="meta">Dicatat oleh: <b>${U.kasir.n}</b> (Kasir)</p>
+  <h3>Item pada nota</h3>
+  <div class="add"><label style="margin:0">Sparepart<input id="ns" list="dl-sp" placeholder="Ketik nama sparepart" autocomplete="off"></label>
+  <label style="margin:0">Satuan<output id="nu">–</output></label>
+  <label style="margin:0">Jumlah masuk<input id="nj" type="number" min="1" step="1" inputmode="numeric"></label>
+  <button class="btn pri" id="nadd">+ Tambah ke nota</button></div>
+  <span class="err" id="e-item" role="alert"></span><span class="err" id="e-ns"></span>
+  <div id="items"></div></div>
+  <aside class="card sum" id="sum"></aside></div>`;
+  $('#dl-sp').innerHTML=D.sp.map(s=>`<option value="${esc(s.n)}">`).join('');
+  $('#nt').valueAsDate=new Date();
+  $('#ns').oninput=()=>{const s=sp($('#ns').value);$('#nu').textContent=s?s.u:'–';setErr('ns','')};
+  $('#nadd').onclick=()=>{setErr('item','');setErr('ns','');const s=sp($('#ns').value),v=Number($('#nj').value);
+    if(!s){setErr('ns','Sparepart belum dipilih dari daftar. Ketik sebagian nama lalu pilih saran yang muncul.');return $('#ns').focus()}
+    if(!Number.isInteger(v)||v<1){setErr('item','Isi jumlah masuk minimal 1 (bilangan bulat).');return $('#nj').focus()}
+    if(nota.some(x=>x.id===s.id)){setErr('item',`${esc(s.n)} sudah ada di nota ini. Ubah jumlahnya langsung pada tabel.`);return}
+    nota.push({id:s.id,j:v});$('#ns').value='';$('#nj').value='';$('#nu').textContent='–';$('#ns').focus();draw()};
+  $('#nn').oninput=()=>setErr('nn','');$('#np').onchange=()=>setErr('np','');
+  function draw(){$('#items').innerHTML=tbl(nota,'masuk');bindTbl(nota,'masuk',draw);
+    const tot=nota.reduce((a,x)=>a+x.j,0);
+    $('#sum').innerHTML=`<h3 style="margin-top:0">Ringkasan nota</h3><div class="big-n">${nota.length}<span style="font-size:20px"> item</span></div><dl><dt>Total unit masuk</dt><dd>${tot}</dd><dt>Stok setelah disimpan</dt>${nota.length?nota.map(x=>{const s=spid(x.id);return `<dd>${esc(s.n)}: ${s.s} → <b>${s.s+x.j}</b> ${s.u}</dd>`}).join(''):'<dd style="color:var(--mute);font-weight:400">–</dd>'}</dl>
+    <button class="btn pri big" id="nsave">Simpan Nota</button><button class="btn big" id="ncancel" style="margin-top:10px">Batal</button>`;
+    $('#nsave').onclick=save;$('#ncancel').onclick=()=>ask('Batalkan nota?','Semua isian dan item pada nota ini akan dikosongkan.','Ya, batalkan',()=>{nota=[];masuk()})}
+  function save(){let bad=null;const n=$('#nn').value.trim().toUpperCase();
+    setErr('nn');setErr('np');setErr('item');
+    if(!n){setErr('nn','Nomor nota wajib diisi.');bad=bad||'nn'}else if(D.nota.includes(n)){setErr('nn',`Nomor nota ${n} sudah pernah dicatat. Periksa nota atau gunakan nomor lain.`);bad=bad||'nn'}
+    if(!$('#np').value){setErr('np','Pemasok wajib dipilih dari daftar.');bad=bad||'np'}
+    if(!nota.length){setErr('item','Nota belum memiliki item. Tambahkan minimal satu sparepart.');bad=bad||'ns'}
+    if(bad)return $('#'+bad).focus();
+    nota.forEach(x=>{const s=spid(x.id),a=s.s;s.s+=x.j;D.log.unshift({t:now(),j:'Masuk',ref:n,sp:s.n,q:x.j,a,b:s.s,by:U.kasir.n,al:'–'})});
+    D.nota.push(n);D.nn++;const c=nota.length;nota=[];masuk();toast(`✓ Nota ${n} tersimpan (${c} item). Stok sudah diperbarui.`)}
+  draw();
+}
+
+function pakai(){
+  $('#app').innerHTML=`<div class="grid"><div class="card"><h2>Catat Pemakaian Sparepart</h2>
+  <div class="row2"><label>ID servis<input id="ps" value="${nid('SV',D.sv)}" readonly></label>
+  <label>Nomor polisi kendaraan<input id="pn" placeholder="contoh: AB 1234 CD" autocomplete="off" style="text-transform:uppercase"><span class="err" id="e-pn"></span></label></div>
+  <label>Jenis servis<input id="pj" list="dl-js" placeholder="contoh: Servis berkala" autocomplete="off"><span class="err" id="e-pj"></span></label>
+  <datalist id="dl-js"><option>Servis berkala</option><option>Servis ringan</option><option>Ganti kampas rem</option></datalist>
+  <p class="meta">Diambil oleh: <b>${U.montir.n}</b> (Montir) · Waktu tercatat otomatis saat disimpan</p>
+  <h3>Sparepart yang dipakai</h3>
+  <div class="add"><label style="margin:0">Sparepart<input id="pk" list="dl-sp" placeholder="Ketik nama sparepart" autocomplete="off"></label>
+  <label style="margin:0">Satuan<output id="pu">–</output></label>
+  <label style="margin:0">Jumlah dipakai<input id="pq" type="number" min="1" step="1" inputmode="numeric"></label>
+  <button class="btn pri" id="padd">+ Tambah</button></div>
+  <div class="hint" id="stokhint" aria-live="polite">Pilih sparepart untuk melihat stok tersedia.</div>
+  <span class="err" id="e-item" role="alert"></span><span class="err" id="e-pk"></span>
+  <div id="items"></div></div>
+  <aside class="card sum" id="sum"></aside></div>`;
+  $('#dl-sp').innerHTML=D.sp.map(s=>`<option value="${esc(s.n)}">`).join('');
+  const avail=s=>s.s-(pkx.find(x=>x.id===s.id)?.j||0);
+  $('#pk').oninput=()=>{const s=sp($('#pk').value);setErr('pk');setErr('item');$('#pu').textContent=s?s.u:'–';
+    $('#stokhint').innerHTML=s?`Stok tersedia: <b>${avail(s)} ${s.u}</b> ${chip(avail(s))}`:'Pilih sparepart untuk melihat stok tersedia.';
+    if(s)$('#pq').max=avail(s)};
+  $('#pn').oninput=e=>{e.target.value=e.target.value.toUpperCase();setErr('pn')};$('#pj').oninput=()=>setErr('pj');
+  $('#padd').onclick=()=>{setErr('item');setErr('pk');const s=sp($('#pk').value),v=Number($('#pq').value);
+    if(!s){setErr('pk','Sparepart belum dipilih dari daftar. Ketik sebagian nama lalu pilih saran yang muncul.');return $('#pk').focus()}
+    if(!Number.isInteger(v)||v<1){setErr('item','Isi jumlah dipakai minimal 1 (bilangan bulat).');return $('#pq').focus()}
+    if(pkx.some(x=>x.id===s.id)){setErr('item',`${esc(s.n)} sudah ada di daftar servis ini. Ubah jumlahnya langsung pada tabel.`);return}
+    if(v>s.s){setErr('item',s.s===0?`${esc(s.n)} habis. Hubungi kasir atau pemilik untuk pengadaan.`:`Jumlah melebihi stok. Stok ${esc(s.n)} hanya ${s.s} ${s.u}; kurangi jumlahnya.`);return $('#pq').focus()}
+    pkx.push({id:s.id,j:v});$('#pk').value='';$('#pq').value='';$('#pu').textContent='–';$('#stokhint').textContent='Pilih sparepart untuk melihat stok tersedia.';$('#pk').focus();draw()};
+  function draw(){$('#items').innerHTML=tbl(pkx,'pakai');bindTbl(pkx,'pakai',draw);
+    $('#sum').innerHTML=`<h3 style="margin-top:0">Ringkasan servis</h3><div class="big-n">${pkx.length}<span style="font-size:20px"> item</span></div><dl><dt>Stok setelah disimpan</dt>${pkx.length?pkx.map(x=>{const s=spid(x.id);return `<dd>${esc(s.n)}: ${s.s} → <b>${s.s-x.j}</b> ${s.u}</dd>`}).join(''):'<dd style="color:var(--mute);font-weight:400">–</dd>'}</dl>
+    <button class="btn pri big" id="psave">Simpan Pemakaian</button><button class="btn big" id="pcancel" style="margin-top:10px">Batal</button>`;
+    $('#psave').onclick=save;$('#pcancel').onclick=()=>ask('Batalkan pencatatan?','Semua isian servis ini akan dikosongkan.','Ya, batalkan',()=>{pkx=[];route()});}
+  function save(){let bad=null;const n=$('#pn').value.trim().toUpperCase();setErr('pn');setErr('pj');setErr('item');
+    if(!/^[A-Z]{1,2} \d{1,4} [A-Z]{1,3}$/.test(n)){setErr('pn','Format nomor polisi belum sesuai. Contoh: AB 1234 CD (huruf, spasi, angka, spasi, huruf).');bad='pn'}
+    if(!$('#pj').value.trim()){setErr('pj','Jenis servis wajib diisi.');bad=bad||'pj'}
+    if(!pkx.length){setErr('item','Belum ada sparepart. Tambahkan minimal satu item yang dipakai.');bad=bad||'pk'}
+    if(bad)return $('#'+bad).focus();
+    const id=$('#ps').value;pkx.forEach(x=>{const s=spid(x.id),a=s.s;s.s-=x.j;D.log.unshift({t:now(),j:'Pakai',ref:id,sp:s.n,q:x.j,a,b:s.s,by:U.montir.n,al:`${n} · ${$('#pj').value.trim()}`})});
+    D.sv++;const c=pkx.length;pkx=[];route();toast(`✓ Servis ${id} tersimpan (${c} item). Stok sudah dikurangi.`)}
+  draw();
+}
+
+function stok(){
+  const tab=stok.tab||'stok',q=(stok.q||'').toLowerCase(),own=role==='pemilik';
+  let h=`<div class="card"><h2>Stok & Riwayat</h2><div class="tabs"><button class="btn" data-t="stok" aria-pressed="${tab==='stok'}">Stok saat ini</button><button class="btn" data-t="log" aria-pressed="${tab==='log'}">Riwayat aktivitas</button></div>`;
+  if(tab==='stok'){
+    h+=`<label style="margin-top:0">Cari sparepart<input id="sq" value="${esc(stok.q||'')}" placeholder="Ketik nama sparepart"></label>`;
+    const rows=D.sp.filter(s=>s.n.toLowerCase().includes(q));
+    h+=rows.length?`<div class="wrap"><table><thead><tr><th>Sparepart</th><th>Satuan</th><th>Stok</th><th>Status</th>${own?'<th></th>':''}</tr></thead><tbody>`+rows.map(s=>`<tr><td>${esc(s.n)}</td><td>${s.u}</td><td><b>${s.s}</b></td><td>${chip(s.s)}</td>${own?`<td><button class="btn" data-k="${s.id}">Koreksi stok</button></td>`:''}</tr>`).join('')+`</tbody></table></div>`:`<div class="empty">Tidak ada sparepart bernama “${esc(stok.q)}”.</div>`;
+    h+=own?'':`<p class="meta">Koreksi stok hanya dapat dilakukan oleh Pemilik.</p>`;
+  }else{
+    h+=`<div class="wrap"><table><thead><tr><th>Waktu</th><th>Jenis</th><th>Referensi</th><th>Sparepart</th><th>Jumlah</th><th>Stok</th><th>Oleh</th><th>Keterangan</th></tr></thead><tbody>`+D.log.map(l=>`<tr><td>${l.t}</td><td>${l.j}</td><td>${esc(l.ref)}</td><td>${esc(l.sp)}</td><td>${l.j==='Pakai'?'−':l.j==='Masuk'?'+':'±'}${l.q}</td><td>${l.a} → ${l.b}</td><td>${esc(l.by)}</td><td>${esc(l.al)}</td></tr>`).join('')+`</tbody></table></div>`;
+  }
+  $('#app').innerHTML=h+'</div>';
+  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{stok.tab=b.dataset.t;stok()});
+  const sq=$('#sq');if(sq){sq.oninput=()=>{stok.q=sq.value;const p=sq.selectionStart;stok();const n=$('#sq');n.focus();n.setSelectionRange(p,p)}}
+  document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>koreksi(spid(Number(b.dataset.k))));
+}
+function koreksi(s){
+  const d=$('#dlg');
+  d.innerHTML=`<h3 style="margin-top:0">Koreksi stok: ${esc(s.n)}</h3><p class="meta" style="margin-top:0">Stok sistem saat ini: <b>${s.s} ${s.u}</b></p>
+  <label>Stok yang benar (hasil hitung fisik)<input id="kb" type="number" min="0" step="1" inputmode="numeric"><span class="err" id="e-kb"></span></label>
+  <div class="hint" id="kd"></div>
+  <label>Alasan koreksi<input id="ka" placeholder="contoh: selisih hasil hitung fisik" autocomplete="off"><span class="err" id="e-ka"></span></label>
+  <div class="acts"><button class="btn" id="kx">Batal</button><button class="btn pri" id="ky">Simpan Koreksi</button></div>`;
+  d.showModal();
+  $('#kb').oninput=()=>{const v=Number($('#kb').value);$('#kd').textContent=$('#kb').value===''?'':`Perubahan: ${s.s} → ${v} (selisih ${v-s.s>0?'+':''}${v-s.s})`;setErr('kb')};
+  $('#ka').oninput=()=>setErr('ka');$('#kx').onclick=()=>d.close();
+  $('#ky').onclick=()=>{const v=Number($('#kb').value),a=$('#ka').value.trim();let bad=null;
+    if($('#kb').value===''||!Number.isInteger(v)||v<0){setErr('kb','Isi stok yang benar: bilangan bulat, minimal 0.');bad='kb'}else if(v===s.s){setErr('kb','Nilainya sama dengan stok sistem. Tidak ada yang perlu dikoreksi.');bad='kb'}
+    if(a.length<5){setErr('ka','Alasan wajib diisi (minimal 5 karakter) agar tercatat di riwayat.');bad=bad||'ka'}
+    if(bad)return $('#'+bad).focus();
+    const o=s.s;s.s=v;D.log.unshift({t:now(),j:'Koreksi',ref:'–',sp:s.n,q:Math.abs(v-o),a:o,b:v,by:U.pemilik.n,al:a});d.close();stok();toast(`✓ Stok ${s.n} dikoreksi ${o} → ${v}. Tercatat di riwayat.`)};
+}
+
+route();
+</script>
+</body>
+</html>
